@@ -1,14 +1,30 @@
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import {
+    MapContainer,
+    TileLayer,
+    Marker,
+    Popup,
+    useMap,
+    useMapEvents,
+} from "react-leaflet";
+
 import styles from "./Map.module.css";
 import { useCities } from "../contexts/CitiesContext";
 import { useEffect, useState } from "react";
+import { useGeolocation } from "../hooks/useGeolocation";
+
+import Button from "./Button";
 
 function Map() {
     const [searchParams] = useSearchParams();
-
+    const [mapPosition, setMapPosition] = useState([50, 0]);
     const { cities } = useCities();
-    const [mapPosition, setMapPosition] = useState([52, 13]);
+
+    const {
+        isLoading: isLoadingGeoLocation,
+        getPosition: getPositionGeoLocation,
+        position: positionGeolocation,
+    } = useGeolocation();
 
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
@@ -21,10 +37,30 @@ function Map() {
         [lat, lng]
     );
 
-    const navigate = useNavigate();
+    useEffect(
+        function () {
+            if (
+                positionGeolocation &&
+                typeof positionGeolocation.lat === "number" &&
+                typeof positionGeolocation.lng === "number"
+            )
+                setMapPosition([
+                    positionGeolocation.lat,
+                    positionGeolocation.lng,
+                ]);
+        },
+        [positionGeolocation]
+    );
 
     return (
         <div className={styles.mapContainer}>
+            {!positionGeolocation && (
+                <Button type="position" onClick={getPositionGeoLocation}>
+                    {isLoadingGeoLocation
+                        ? "Loading..."
+                        : "Use my current location"}
+                </Button>
+            )}
             <MapContainer
                 center={mapPosition}
                 zoom={6}
@@ -48,6 +84,7 @@ function Map() {
                 ))}
 
                 <ChangeCenter position={mapPosition} />
+                <ClickOnMap />
             </MapContainer>
         </div>
     );
@@ -57,6 +94,15 @@ function ChangeCenter({ position }) {
     const map = useMap();
     map.setView(position, 6);
     return null;
+}
+
+function ClickOnMap() {
+    const navigate = useNavigate();
+    useMapEvents({
+        click: (e) => {
+            navigate(`form?lat=${e.latlng.lat}&lng=${e.latlng.lng}`);
+        },
+    });
 }
 
 export default Map;
