@@ -1,6 +1,8 @@
 // "https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=0&longitude=0"
+import "react-datepicker/dist/react-datepicker.css";
 
 import { useEffect, useState } from "react";
+import DatePicker from "react-datepicker";
 
 import styles from "./Form.module.css";
 import Button from "./Button";
@@ -66,6 +68,11 @@ function Form() {
 
     if (isLoadingGeocoding) return <Spinner />;
 
+    if (!lat || !lng)
+        return (
+            <Message message="No city was selected. Please, start by clicking on a city." />
+        );
+
     if (geocodeError) return <Message message={geocodeError} />;
 
     return (
@@ -82,10 +89,11 @@ function Form() {
 
             <div className={styles.row}>
                 <label htmlFor="date">When did you go to {cityName}?</label>
-                <input
+                <DatePicker
                     id="date"
-                    onChange={(e) => setDate(e.target.value)}
-                    value={date}
+                    selected={date}
+                    onChange={(date) => setDate(date)}
+                    dateFormat="dd/MM/yyyy"
                 />
             </div>
 
