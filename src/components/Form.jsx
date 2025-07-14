@@ -11,6 +11,7 @@ import Spinner from "./Spinner";
 import { useURLGeocoding } from "../hooks/useURLGeocoding";
 import Message from "./Message";
 import { useCities } from "../contexts/CitiesContext";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function convertToEmoji(countryCode) {
@@ -31,9 +32,10 @@ function Form() {
     const [isLoadingGeocoding, setIsLoadingGeocoding] = useState(false);
     const [geocodeError, setGeocodeError] = useState("");
     const [emoji, setEmoji] = useState("");
+    const navigate = useNavigate();
 
     const [lat, lng] = useURLGeocoding();
-    const { addNewCity } = useCities();
+    const { addNewCity, isLoading } = useCities();
 
     useEffect(
         function () {
@@ -68,7 +70,7 @@ function Form() {
         [lat, lng]
     );
 
-    function handleAddNewCity(e) {
+    async function handleAddNewCity(e) {
         e.preventDefault();
 
         const newCity = {
@@ -83,7 +85,8 @@ function Form() {
             },
         };
 
-        addNewCity(newCity);
+        await addNewCity(newCity);
+        navigate("/app/cities");
     }
 
     if (isLoadingGeocoding) return <Spinner />;
@@ -96,7 +99,7 @@ function Form() {
     if (geocodeError) return <Message message={geocodeError} />;
 
     return (
-        <form className={styles.form}>
+        <form className={`${styles.form} ${isLoading ? styles.loading : ""}`}>
             <div className={styles.row}>
                 <label htmlFor="cityName">City name</label>
                 <input
