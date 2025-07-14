@@ -10,6 +10,7 @@ import BackButton from "./BackButton";
 import Spinner from "./Spinner";
 import { useURLGeocoding } from "../hooks/useURLGeocoding";
 import Message from "./Message";
+import { useCities } from "../contexts/CitiesContext";
 
 // eslint-disable-next-line react-refresh/only-export-components
 export function convertToEmoji(countryCode) {
@@ -32,6 +33,7 @@ function Form() {
     const [emoji, setEmoji] = useState("");
 
     const [lat, lng] = useURLGeocoding();
+    const { addNewCity } = useCities();
 
     useEffect(
         function () {
@@ -65,6 +67,24 @@ function Form() {
         },
         [lat, lng]
     );
+
+    function handleAddNewCity(e) {
+        e.preventDefault();
+
+        const newCity = {
+            cityName,
+            country,
+            emoji,
+            date,
+            notes,
+            position: {
+                lat,
+                lng,
+            },
+        };
+
+        addNewCity(newCity);
+    }
 
     if (isLoadingGeocoding) return <Spinner />;
 
@@ -109,7 +129,9 @@ function Form() {
             </div>
 
             <div className={styles.buttons}>
-                <Button type="primary">Add</Button>
+                <Button type="primary" onClick={handleAddNewCity}>
+                    Add
+                </Button>
                 <BackButton />
             </div>
         </form>

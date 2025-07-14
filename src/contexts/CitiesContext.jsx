@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 
 const CitiesContext = createContext();
 
-const BASE_URL = "http://localhost:8000/cities";
+const BASE_URL = "http://localhost:8000";
 
 function CitiesProvider({ children }) {
     const [cities, setCities] = useState([]);
@@ -13,7 +13,7 @@ function CitiesProvider({ children }) {
         async function fetchCities() {
             try {
                 setIsLoading(true);
-                const response = await fetch(BASE_URL);
+                const response = await fetch(`${BASE_URL}/cities`);
                 const data = await response.json();
                 setCities(data);
             } catch (error) {
@@ -29,7 +29,7 @@ function CitiesProvider({ children }) {
     async function getCurrentCity(id) {
         try {
             setIsLoading(true);
-            const response = await fetch(`${BASE_URL}/${id}`);
+            const response = await fetch(`${BASE_URL}/cities/${id}`);
             const data = await response.json();
             setCurrentCity(data);
         } catch (error) {
@@ -39,9 +39,36 @@ function CitiesProvider({ children }) {
         }
     }
 
+    async function addNewCity(newCity) {
+        try {
+            setIsLoading(true);
+            const response = await fetch(`${BASE_URL}/cities`, {
+                method: "POST",
+                body: JSON.stringify(newCity),
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+
+            const data = await response.json();
+
+            setCities((cities) => [...cities, data]);
+        } catch (error) {
+            console.log(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     return (
         <CitiesContext.Provider
-            value={{ cities, isLoading, currentCity, getCurrentCity }}
+            value={{
+                cities,
+                isLoading,
+                currentCity,
+                getCurrentCity,
+                addNewCity,
+            }}
         >
             {children}
         </CitiesContext.Provider>
