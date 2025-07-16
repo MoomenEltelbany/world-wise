@@ -35,6 +35,18 @@
         "lng": 13.376933665713324
       },
       "id": "98443197"
+    },
+    {
+      "id": "932c",
+      "cityName": "Sorocaba",
+      "country": "Brazil",
+      "emoji": "🇧🇷",
+      "date": "2025-07-16T13:02:06.522Z",
+      "notes": "It's where I live. The best ever ",
+      "position": {
+        "lat": "-23.501662849264328",
+        "lng": "-47.45613098144532"
+      }
     }
   ]
 }
