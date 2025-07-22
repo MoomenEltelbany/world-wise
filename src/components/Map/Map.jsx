@@ -9,12 +9,12 @@ import {
 } from "react-leaflet";
 
 import styles from "./Map.module.css";
-import { useCities } from "../contexts/CitiesContext";
+import { useCities } from "../../contexts/CitiesContext";
 import { useEffect, useState } from "react";
-import { useGeolocation } from "../hooks/useGeolocation";
+import { useGeolocation } from "../../hooks/useGeolocation";
 
-import Button from "./Button";
-import { useURLGeocoding } from "../hooks/useURLGeocoding";
+import Button from "../Button/Button";
+import { useURLGeocoding } from "../../hooks/useURLGeocoding";
 
 function Map() {
     const [lat, lng] = useURLGeocoding();

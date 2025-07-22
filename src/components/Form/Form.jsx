@@ -5,12 +5,12 @@ import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 
 import styles from "./Form.module.css";
-import Button from "./Button";
-import BackButton from "./BackButton";
-import Spinner from "./Spinner";
-import { useURLGeocoding } from "../hooks/useURLGeocoding";
-import Message from "./Message";
-import { useCities } from "../contexts/CitiesContext";
+import Button from "../Button/Button";
+import BackButton from "../BackButton/BackButton";
+import Spinner from "../Spinner/Spinner";
+import { useURLGeocoding } from "../../hooks/useURLGeocoding";
+import Message from "../Message/Message";
+import { useCities } from "../../contexts/CitiesContext";
 import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react-refresh/only-export-components
